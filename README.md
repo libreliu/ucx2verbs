@@ -1,3 +1,10 @@
+# UCX2Verbs
+
+## Dev
+1. Finding the right structs by `/enum [A-Za-z_]+ {.*};/gmsU` and `/struct [A-Za-z_]+ {.*};/gmsU` respectively
+   - `/struct [A-Za-z_]+;/gmsU` for some placeholders
+   - `/enum {.*};/gmsU` for some anonymous enums
+
 int ibv_query_port(struct ibv_context *context, uint8_t port_num, struct ibv_port_attr *port_attr);
 struct ibv_context *ibv_open_device(struct ibv_device *device);
 int ibv_close_device(struct ibv_context *context);
