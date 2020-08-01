@@ -17,16 +17,27 @@ It's a silly idea, since UCP it self is built on top of libibverbs and so many o
 As we advance we've encountered several problems:
 1. The namespace conflict
    - Ideas on resolving this: Add "_fake" for all functions first, then replace syms on corresponding files, or to use some linking techniques, like editing all syms in object file (but further problems will arise, such as DWARF symbols)
-2. Layer of abstractions
-   - In simple Verbs applications (e.g. the one with only send/recv), wrapping to ucp is trivial
+2. API complexity
+   - In simple Verbs applications (e.g. the one with only send/recv), wrapping to UCP is trivial
    - In complicated ones, wrap like following:
       - Atomics <-> ucp_atomic_*
       - RDMA Read / Write <-> ucp_get_nb / ucp_put_nb
       - Send/Recv <-> ucp_tag_send_nb / ucp_tag_recv_nb
    - However, we probably don't have that kind of familiarity to deal with UCP and ibVerbs to that extent, since making the above scheme work requires fair knowledge in their API's respectively.
-      - Especially on the pd and the mr stuff.. Those are the things that we're not that familiar with.
 
 We've written some code and tried reading the InfiniBand Architecture Manual on the translation scheme we strive to use, but we then dropped this idea.  Also, we are quite bothered where will it be used if we've truly written our "verbs to ucx" library.
+
+## Slide Talk
+
+We first discussed ideas on bridging UCP to ibVerbs. That is to say, the RDMA calls in the SPDK NVMe and the NVMf target is interpreted to UCP calls by a self-made bridge.
+
+It's a silly idea, since UCP it self is built on top of libibverbs and so many others, and the only advantage we could think of is that it stays in rule. What's more, as we advance we've encountered several problems.
+
+The very first problem is the namespace conflict, since our bridge will implement Verbs call, and so does libibverbs used by UCT (underlying parts below UCP). Ideas on resolving this is to add "_fake" for all functions first, then replace syms on corresponding files, or to use some linking techniques, like editing all syms in object file (but further problems will arise, such as DWARF symbols).
+
+The second problem is the broad interfaces that we need to get familiar with. We came up with this idea because we're not familiar with the SPDK stuff, but we've proved ourselves to be not that familiar with UCP and ibVerbs either. In simple Verbs applications (like only one mr, one send/recv..), wrapping to UCP is trivial to implement. But in complicated ones, we need to get in touch with behaviors broader than we had expected, for example the QP state transitions (RESET, RTR, RTS...) and simulations, memory regions and so on. 
+
+So, we did wrote some code and tried reading the InfiniBand Architecture Manual on the translation scheme we strive to use, but we then dropped this idea.  Also, we are quite bothered where will it be used if we've truly written our "verbs to ucx" library.
 
 
 
