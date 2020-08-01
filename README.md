@@ -1,4 +1,7 @@
-# UCX2Verbs
+# ~~UCX2Verbs~~ Verbs2UCX
+
+(About the name: A typo in creating the repo..)
+
 
 ## Dev
 1. Finding the right structs by `/enum [A-Za-z_]+ {.*};/gmsU` and `/struct [A-Za-z_]+ {.*};/gmsU` respectively
